@@ -9,6 +9,7 @@
     </parent>
 
     <artifactId>management-app</artifactId>
+    <packaging>war</packaging>
 
 <!--    <dependencies>-->
 <!--        <dependency>-->

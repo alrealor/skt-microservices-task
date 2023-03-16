@@ -1,4 +1,4 @@
-package skytouch.task.microservice;
+package com.skt.task.microservice;
 
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;

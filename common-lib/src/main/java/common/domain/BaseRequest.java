@@ -1,0 +1,18 @@
+package common.domain;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
+
+/**
+ * Generic class to handle request types
+ * @param <T> request type
+ */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class BaseRequest<T> implements Serializable {
+    T payload;
+}

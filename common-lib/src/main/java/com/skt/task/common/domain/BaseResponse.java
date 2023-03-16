@@ -1,4 +1,4 @@
-package common.domain;
+package com.skt.task.common.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

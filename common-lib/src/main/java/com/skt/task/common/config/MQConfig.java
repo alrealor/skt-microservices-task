@@ -1,4 +1,4 @@
-package common.config;
+package com.skt.task.common.config;
 
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;

@@ -84,7 +84,6 @@
 	</dependencies>
 
 	<build>
-		<finalName>microservice</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

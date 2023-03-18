@@ -5,46 +5,82 @@ import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * Configuration class for handling connection with RabbitMQ queues producer/consumer
  */
+@Configuration
 public class MQConfig {
-    private static final String PRODUCT_QUEUE = "product-queue";
-    private static final String PRODUCT_EXCHANGE = "product_exchange";
-    private static final String PRODUCT_ROUTING_KEY = "product_routingKey";
+
+    public static final String PRODUCT_RPC_GET_QUEUE = "product_rpc_get_queue";
+    public static final String PRODUCT_RPC_GET_REPLY_QUEUE = "product_rpc_get_reply_queue";
+    public static final String PRODUCT_RPC_GET_EX= "product_rpc_get_exchange" ;
+    public static final String PRODUCT_RPC_GET_RK = "product_rpc_get_routingkey";
+
+    public static final String PRODUCT_POST_QUEUE = "product_post_queue";
+    public static final String PRODUCT_POST_EX = "product_post_exchange" ;
+    public static final String PRODUCT_POST_RK = "product_post_routingkey";
+
+    // TODO - inject properties -> @Value("${rmq.product.queue}")
 
     /**
-     * Method to create Queue
+     * Method to create product request queue
      * @return queue of {@link Queue} type
      */
-    public Queue queue() {
-        return new Queue(PRODUCT_QUEUE);
+    @Bean(name="getRpcQueue")
+    public Queue getRpcQueue() {
+        return new Queue(PRODUCT_RPC_GET_QUEUE);
+    }
+
+    /**
+     * Method to create product response queue
+     * @return queue of {@link Queue} type
+     */
+    @Bean(name = "postQueue")
+    public Queue postQueue() {
+        return new Queue(PRODUCT_POST_QUEUE);
     }
 
     /**
      * Method to create TopicExchange
      * @return topic exchange of {@link TopicExchange} type
      */
-    public TopicExchange topic() {
-        return new TopicExchange(PRODUCT_EXCHANGE);
+    @Bean(name = "getTopicExchange")
+    public TopicExchange getTopicExchange() {
+        return new TopicExchange(PRODUCT_RPC_GET_EX);
+    }
+    @Bean(name = "postTopicExchange")
+    public TopicExchange postTopicExchange() {
+        return new TopicExchange(PRODUCT_POST_EX);
     }
 
     /**
      * Method to bind queue and topic exchange using a routing key
      * @return binding builder of {@link Binding} type
      */
-    public Binding binding(Queue queue, TopicExchange exchange) {
+    @Bean
+    public Binding getBinding(Queue getRpcQueue, TopicExchange getTopicExchange) {
         return BindingBuilder
-                .bind(queue)
-                .to(exchange)
-                .with(PRODUCT_ROUTING_KEY);
+                .bind(getRpcQueue)
+                .to(getTopicExchange)
+                .with(PRODUCT_POST_RK);
+    }
+
+    @Bean
+    public Binding postBinding(Queue postQueue, TopicExchange postTopicExchange) {
+        return BindingBuilder
+                .bind(postQueue)
+                .to(postTopicExchange)
+                .with(PRODUCT_POST_RK);
     }
 
     /**
      * Method to create converter from json to object and vice-versa
      * @return message converter of {@link MessageConverter} type
      */
+    @Bean
     public MessageConverter messageConverter() {
         return new Jackson2JsonMessageConverter();
     }
@@ -53,6 +89,7 @@ public class MQConfig {
      * Method to create the template client
      * @return template client of {@link AmqpTemplate} type
      */
+    @Bean
     public AmqpTemplate template(ConnectionFactory connectionFactory) {
         RabbitTemplate template = new RabbitTemplate(connectionFactory);
         template.setMessageConverter(messageConverter());

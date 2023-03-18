@@ -1,8 +1,6 @@
 package com.skt.task.microservice.controller;
 
 import com.skt.task.common.domain.ProductDTO;
-import com.skt.task.common.domain.message.ProductResponseGet;
-import com.skt.task.microservice.config.MQConfig;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
 
@@ -30,17 +28,23 @@ public class ProductMsgPublisher {
      * method to retrieve the messages into product-queue queue
      * @param products - list of products message of {@link List} type
      */
-    public String publishProductsMsg(final ProductResponseGet responseMsg) {
-        rabbitTemplate.convertAndSend(MQConfig.PRODUCT_EXCHANGE, MQConfig.PRODUCT_ROUTING_KEY, responseMsg);
-        return SUCCESS_MESSAGE;
-    }
+//    public String publishGetResponseMsg(final List<ProductDTO> products) throws Exception {
+//        ProductResponseMessage message = new ProductResponseMessage();
+//        message.setMessageType("GET_RESPONSE");
+//        message.setProducts(products);
+//        rabbitTemplate.convertAndSend(MQConfiguration.PRODUCT_RES_EXCHANGE, MQConfiguration.PRODUCT_RES_ROUTING_KEY, message);
+//        return SUCCESS_MESSAGE;
+//    }
 
     /**
      * method to retrieve the messages into product-queue queue
      * @param product - product message of {@link ProductDTO} type
      */
-    public String publishProductMsg(final ProductDTO product) {
-        rabbitTemplate.convertAndSend(MQConfig.PRODUCT_EXCHANGE, MQConfig.PRODUCT_ROUTING_KEY, product);
-        return SUCCESS_MESSAGE;
-    }
+//    public String publishPostResponseMsg(final ProductDTO product) throws Exception {
+//        ProductResponseMessage message = new ProductResponseMessage();
+//        message.setMessageType("POST_RESPONSE");
+//        message.setProducts(Collections.singletonList(product));
+//        rabbitTemplate.convertAndSend(MQConfiguration.PRODUCT_RES_EXCHANGE, MQConfiguration.PRODUCT_RES_ROUTING_KEY, message);
+//        return SUCCESS_MESSAGE;
+//    }
 }

@@ -8,10 +8,11 @@
     </head>
     <body>
         <div class="alert alert-secondary text-center" role="alert">
-            <h5>PRODUCTS</h5>
+            <h5>LIST OF PRODUCTS</h5>
             <hr>
-            <a href="/goToCreatePage" class="btn btn-secondary" role="button" style="width:150px;margin-right: 1em">Create</a>
-            <a href="/goToListPage" class="btn btn-secondary" role="button" style="width:150px;">Display</a>
+            <div>
+                list of products
+            </div>
         </div>
     </body>
 </html>

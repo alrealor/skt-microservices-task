@@ -5,6 +5,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+
+/**
+ * class that represents a product of domain
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

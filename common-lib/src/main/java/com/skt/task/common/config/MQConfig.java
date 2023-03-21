@@ -15,7 +15,6 @@ import org.springframework.context.annotation.Configuration;
 public class MQConfig {
 
     public static final String PRODUCT_RPC_GET_QUEUE = "product_rpc_get_queue";
-    public static final String PRODUCT_RPC_GET_REPLY_QUEUE = "product_rpc_get_reply_queue";
     public static final String PRODUCT_RPC_GET_EX= "product_rpc_get_exchange" ;
     public static final String PRODUCT_RPC_GET_RK = "product_rpc_get_routingkey";
 
@@ -47,27 +46,32 @@ public class MQConfig {
      * Method to create TopicExchange
      * @return topic exchange of {@link TopicExchange} type
      */
-    @Bean(name = "getTopicExchange")
-    public TopicExchange getTopicExchange() {
-        return new TopicExchange(PRODUCT_RPC_GET_EX);
+    @Bean(name = "getDirectExchange")
+    public DirectExchange getDirectExchange() {
+        return new DirectExchange(PRODUCT_RPC_GET_EX);
     }
+
     @Bean(name = "postTopicExchange")
     public TopicExchange postTopicExchange() {
         return new TopicExchange(PRODUCT_POST_EX);
     }
 
     /**
-     * Method to bind queue and topic exchange using a routing key
+     * Method to bind get rpc queue and direct exchange
      * @return binding builder of {@link Binding} type
      */
     @Bean
-    public Binding getBinding(Queue getRpcQueue, TopicExchange getTopicExchange) {
+    public Binding getRpcBinding(DirectExchange getDirectExchange, Queue getRpcQueue) {
         return BindingBuilder
                 .bind(getRpcQueue)
-                .to(getTopicExchange)
-                .with(PRODUCT_POST_RK);
+                .to(getDirectExchange)
+                .with(PRODUCT_RPC_GET_RK);
     }
 
+    /**
+     * Method to bind queue and topic exchange using a routing key
+     * @return binding builder of {@link Binding} type
+     */
     @Bean
     public Binding postBinding(Queue postQueue, TopicExchange postTopicExchange) {
         return BindingBuilder

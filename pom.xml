@@ -11,8 +11,8 @@
   <!-- submodules -->
   <modules>
     <module>common-lib</module>
-    <module>microservice</module>
-    <module>management-app</module>
+    <module>product-service</module>
+    <module>product-ui</module>
   </modules>
 
   <!-- properties -->

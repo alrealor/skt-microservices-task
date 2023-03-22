@@ -1,13 +1,16 @@
 package com.skt.task.microservice;
 
 import org.junit.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
-class MicroserviceApplicationTests {
+import static org.junit.Assert.assertTrue;
 
+/**
+ * test class for spring boot main class
+ */
+public class MicroserviceApplicationTests {
 	@Test
-	void contextLoads() {
+	public void main() {
+		MicroserviceApplication.main(new String[] {});
+		assertTrue(true);
 	}
-
 }

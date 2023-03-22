@@ -26,6 +26,7 @@ public class MQConfig {
 
     /**
      * Method to create product request queue
+     *
      * @return queue of {@link Queue} type
      */
     @Bean(name="getRpcQueue")
@@ -35,6 +36,7 @@ public class MQConfig {
 
     /**
      * Method to create product response queue
+     *
      * @return queue of {@link Queue} type
      */
     @Bean(name = "postQueue")
@@ -44,6 +46,7 @@ public class MQConfig {
 
     /**
      * Method to create TopicExchange
+     *
      * @return topic exchange of {@link TopicExchange} type
      */
     @Bean(name = "getDirectExchange")
@@ -57,7 +60,9 @@ public class MQConfig {
     }
 
     /**
-     * Method to bind get rpc queue and direct exchange
+     * Method to bind get rpc queue and direct exchange, using this direct exchange the call is going to wait until
+     * listener responds
+     *
      * @return binding builder of {@link Binding} type
      */
     @Bean
@@ -70,6 +75,7 @@ public class MQConfig {
 
     /**
      * Method to bind queue and topic exchange using a routing key
+     *
      * @return binding builder of {@link Binding} type
      */
     @Bean
@@ -82,6 +88,7 @@ public class MQConfig {
 
     /**
      * Method to create converter from json to object and vice-versa
+     *
      * @return message converter of {@link MessageConverter} type
      */
     @Bean
@@ -91,6 +98,7 @@ public class MQConfig {
 
     /**
      * Method to create the template client
+     *
      * @return template client of {@link AmqpTemplate} type
      */
     @Bean

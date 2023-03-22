@@ -5,6 +5,8 @@ import com.skt.task.common.exception.BusinessException;
 import com.skt.task.microservice.dao.entity.Product;
 import com.skt.task.microservice.dao.repository.ProductRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,7 +25,6 @@ public class ProductService {
      */
     private final ProductRepository productRepository;
 
-
     /**
      * Constructor used for dependency injection
      *
@@ -34,11 +35,11 @@ public class ProductService {
     }
 
     /**
-     * Service method to get all the available products from DB
+     * transactional service method to get all the available products from DB
      *
      * @return Collection of type {@link List<Product>} type
      */
-//    TODO - @Transactional()
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public List<ProductDTO> getProducts() throws Exception {
         return this.productRepository.getProducts()
                 .stream()
@@ -47,10 +48,11 @@ public class ProductService {
     }
 
     /**
-     * Service method to add a new product into DB
+     * transactional service method to add a new product into DB
      *
      * @return Collection of type {@link List<Product>} type
      */
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public ProductDTO addProduct(final ProductDTO request) throws Exception {
          return Optional.of(request)
                 .map(req -> this.productRepository.addProduct(req.getName(), req.getPrice()))

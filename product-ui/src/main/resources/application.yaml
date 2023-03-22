@@ -1,0 +1,9 @@
+spring:
+  mvc:
+    view:
+      prefix: /WEB-INF/jsp/
+      suffix: .jsp
+  rabbitmq:
+    addresses: 'localhost:5672'
+    username: guest
+    password: guest

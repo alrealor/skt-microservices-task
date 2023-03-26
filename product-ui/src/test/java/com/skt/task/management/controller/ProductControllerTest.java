@@ -8,8 +8,9 @@ import org.junit.runner.RunWith;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.ui.Model;
@@ -18,7 +19,8 @@ import java.math.BigDecimal;
 
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -104,9 +106,11 @@ public class ProductControllerTest {
     @Test
     public void test_get_createProduct_success() throws Exception {
 
-        this.mockMvc.perform(post("/createProduct"))
+        this.mockMvc.perform(post("/createProduct")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}")
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(view().name("index"))
                 .andDo(print());
     }
 
@@ -136,13 +140,14 @@ public class ProductControllerTest {
     public void test_createProduct_success() throws Exception {
 
         ProductDTO product = getTestProductDTO();
-        doNothing()
+
+        doReturn(product)
                 .when(productService)
                 .publishPostRequestMsg(product);
 
-        String result = this.productController.createProduct(model, product);
+        ResponseEntity<ProductDTO> result = this.productController.createProduct(product);
 
-        assertEquals("index", result);
+        assertNotNull(result);
     }
 
     /**

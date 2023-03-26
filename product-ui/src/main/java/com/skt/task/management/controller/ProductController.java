@@ -2,16 +2,18 @@ package com.skt.task.management.controller;
 
 import com.skt.task.common.domain.ProductDTO;
 import com.skt.task.management.service.ProductService;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 /**
  * controller class to manage the binding between JSPs and server
  */
+@CrossOrigin(origins = {"http://localhost:8080", "http://127.0.0.1:8080"})
 @Controller
 public class ProductController {
 
@@ -58,9 +60,9 @@ public class ProductController {
      *
      * @return view file name
      */
-    @PostMapping("/createProduct")
-    public String createProduct(Model model, ProductDTO product) throws Exception {
-        productService.publishPostRequestMsg(product);
-        return "index";
+    @PostMapping(value = "/createProduct", consumes= MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO product) throws Exception {
+        ProductDTO result = productService.publishPostRequestMsg(product);
+        return ResponseEntity.ok().body(result);
     }
 }

@@ -1,6 +1,7 @@
 package com.skt.task.management.service;
 
 import com.skt.task.common.domain.ProductDTO;
+import com.skt.task.common.exception.BusinessException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,7 +25,7 @@ public class ProductServiceTest {
     @MockBean
     private RabbitTemplate rabbitTemplate;
 
-    @MockBean
+    @MockBean(name="getDirectExchange")
     private DirectExchange directExchange;
 
     private ProductService productService;
@@ -59,14 +60,29 @@ public class ProductServiceTest {
     @Test
     public void test_publishPostRequestMsg_success() throws Exception {
 
-        doNothing()
-                .when(this.rabbitTemplate)
-                .convertAndSend(any(String.class), any(String.class), any(ProductDTO.class));
+        ProductDTO dto = getTestProductDTO();
 
-        this.productService.publishPostRequestMsg(getTestProductDTO());
+        doReturn(dto)
+                .when(this.rabbitTemplate)
+                .convertSendAndReceive(any(String.class), any(String.class), any(ProductDTO.class));
+
+        ProductDTO result = this.productService.publishPostRequestMsg(getTestProductDTO());
 
         verify(this.rabbitTemplate, times(1)).
-                convertAndSend(any(String.class), any(String.class), any(ProductDTO.class));
+                convertSendAndReceive(any(String.class), any(String.class), any(ProductDTO.class));
+    }
+
+    /**
+     * test method for publishing a post message into post(publisher/subscriber) queue in order to create a new product
+     */
+    @Test(expected = BusinessException.class)
+    public void test_publishPostRequestMsg_fail_businessException() throws Exception {
+
+        doReturn(null)
+                .when(this.rabbitTemplate)
+                .convertSendAndReceive(any(String.class), any(String.class), any(ProductDTO.class));
+
+        this.productService.publishPostRequestMsg(getTestProductDTO());
     }
 
     /**

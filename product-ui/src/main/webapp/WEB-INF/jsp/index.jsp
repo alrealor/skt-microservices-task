@@ -12,9 +12,11 @@
             <header class="alert alert-secondary">
                 <h4>PRODUCTS</h4>
             </header>
-            <main class="container shadow mb-5  bg-body rounded">
-                <a href="/goToCreatePage" class="btn btn-secondary" role="button" style="width:150px;margin-right: 1em">Create</a>
-                <a href="/goToListPage" class="btn btn-secondary" role="button" style="width:150px;">Display</a>
+            <main class="container shadow mb-5 bg-body rounded">
+                <div class="">
+                    <a href="/goToCreatePage" class="btn btn-secondary" role="button" style="width:150px;margin-right: 1em">Create</a>
+                    <a href="/goToListPage" class="btn btn-secondary" role="button" style="width:150px;">Display</a>
+                </div>
             </main>
             <footer class="alert alert-secondary">
             </footer>

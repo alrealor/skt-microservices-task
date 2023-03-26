@@ -1,6 +1,7 @@
 package com.skt.task.microservice.controller;
 
 import com.skt.task.common.domain.ProductDTO;
+import com.skt.task.common.exception.IncorrectMessageException;
 import com.skt.task.microservice.service.ProductService;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,8 +13,13 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import static java.util.Collections.singletonList;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.*;
+
+/**
+ * Test class for product message listener controller
+ */
 
 @RunWith(SpringJUnit4ClassRunner.class)
 public class ProductMsgListenerTest {
@@ -23,11 +29,20 @@ public class ProductMsgListenerTest {
 
     private ProductMsgListener productMsgListener;
 
+    /**
+     * setup class
+     * @throws Exception
+     */
     @Before
     public void setUp() throws Exception {
         productMsgListener = new ProductMsgListener(productService);
     }
 
+    /**
+     * test a success execution of method getProductMessage
+     *
+     * @throws Exception
+     */
     @Test
     public void test_getProductMessage_success() throws Exception {
 
@@ -46,8 +61,14 @@ public class ProductMsgListenerTest {
         verify(productService, times(1)).getProducts();
     }
 
+    /**
+     * test a success execution of method addProduct
+     *
+     * @throws Exception
+     */
+
     @Test
-    public void postProductMessage() throws Exception {
+    public void test_postProductMessage_success() throws Exception {
 
         ProductDTO product = getTestProductDTO();
 
@@ -58,6 +79,35 @@ public class ProductMsgListenerTest {
         productMsgListener.postProductMessage(product);
 
         verify(productService, times(1)).addProduct(any(ProductDTO.class));
+    }
+
+
+    /**
+     * test a fail execution of method postProductMessage due to negative product price
+     *
+     * @throws Exception
+     */
+    @Test(expected = IncorrectMessageException.class)
+    public void test_postProductMessage_fail_negativePrice_incorrectMessageException() throws Exception {
+
+        ProductDTO product = getTestProductDTO();
+        product.setPrice(new BigDecimal("-50"));
+
+        productMsgListener.postProductMessage(product);
+    }
+
+    /**
+     * test a fail execution of method postProductMessage due to missing product name
+     *
+     * @throws Exception
+     */
+    @Test(expected = IncorrectMessageException.class)
+    public void test_postProductMessage_fail_missingName_incorrectMessageException() throws Exception {
+
+        ProductDTO product = getTestProductDTO();
+        product.setName("");
+
+        productMsgListener.postProductMessage(product);
     }
 
     /**

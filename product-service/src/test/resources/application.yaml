@@ -1,5 +1,6 @@
 server:
   port: '8091'
+# in memory DB
 jdbc:
   driverClassName: org.h2.Driver
   url: 'jdbc:h2:mem:myDb;DB_CLOSE_DELAY'

@@ -14,15 +14,51 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class MQConfig {
 
-    public static final String PRODUCT_RPC_GET_QUEUE = "product_rpc_get_queue";
-    public static final String PRODUCT_RPC_GET_EX= "product_rpc_get_exchange" ;
-    public static final String PRODUCT_RPC_GET_RK = "product_rpc_get_routingkey";
+    // GET PRC QUEUE
+    public static final String GET_RPC_QUEUE = "get_rpc_queue";
+    public static final String GET_RPC_EXCHANGE= "get_rpc_exchange" ;
+    public static final String GET_RPC_ROUTING_KEY= "get_rpc_routingkey";
 
-    public static final String PRODUCT_POST_QUEUE = "product_post_queue";
-    public static final String PRODUCT_POST_EX = "product_post_exchange" ;
-    public static final String PRODUCT_POST_RK = "product_post_routingkey";
+    // POST QUEUE
+    public static final String POST_QUEUE = "post_queue";
+    public static final String POST_EXCHANGE = "post_exchange" ;
+    public static final String POST_ROUTING_KEY = "post_routingkey";
+    // POST DEAD LETTER QUEUE
+    public static final String POST_DLQ_QUEUE = "post_dead_letter_queue";
+    public static final String POST_DLQ_EXCHANGE = "post_dead_letter_exchange" ;
+    public static final String POST_DLQ_ROUTING_KEY = "post_dead_letter_routingkey";
 
     // TODO - inject properties -> @Value("${rmq.product.queue}")
+
+    /**
+     * Method to create DirectExchange for get request queue
+     *
+     * @return topic exchange of {@link DirectExchange} type
+     */
+    @Bean(name = "getDirectExchange")
+    public DirectExchange getDirectExchange() {
+        return new DirectExchange(GET_RPC_EXCHANGE);
+    }
+
+    /**
+     * Method to create TopicExchange for post request queue
+     *
+     * @return topic exchange of {@link TopicExchange} type
+     */
+    @Bean(name = "postTopicExchange")
+    public TopicExchange postTopicExchange() {
+        return new TopicExchange(POST_EXCHANGE);
+    }
+
+    /**
+     * Method to create DirectExchange as a dead letter queue exchange for post request queue
+     *
+     * @return topic exchange of {@link DirectExchange} type
+     */
+    @Bean(name = "postDlqExchange")
+    public DirectExchange postDlqExchange() {
+        return new DirectExchange(POST_DLQ_EXCHANGE);
+    }
 
     /**
      * Method to create product request queue
@@ -31,7 +67,7 @@ public class MQConfig {
      */
     @Bean(name="getRpcQueue")
     public Queue getRpcQueue() {
-        return new Queue(PRODUCT_RPC_GET_QUEUE);
+        return new Queue(GET_RPC_QUEUE);
     }
 
     /**
@@ -41,23 +77,24 @@ public class MQConfig {
      */
     @Bean(name = "postQueue")
     public Queue postQueue() {
-        return new Queue(PRODUCT_POST_QUEUE);
+
+        return QueueBuilder.durable(POST_QUEUE)
+                .withArgument("x-dead-letter-exchange", MQConfig.POST_DLQ_EXCHANGE)
+                .withArgument("x-dead-letter-routing-key", MQConfig.POST_DLQ_ROUTING_KEY)
+                .build();
     }
 
     /**
-     * Method to create TopicExchange
+     * Method to create a dead letter queue
      *
-     * @return topic exchange of {@link TopicExchange} type
+     * @return queue of {@link Queue} type
      */
-    @Bean(name = "getDirectExchange")
-    public DirectExchange getDirectExchange() {
-        return new DirectExchange(PRODUCT_RPC_GET_EX);
+    @Bean(name = "postDlq")
+    public Queue postDlq() {
+
+        return QueueBuilder.durable(POST_DLQ_QUEUE).build();
     }
 
-    @Bean(name = "postTopicExchange")
-    public TopicExchange postTopicExchange() {
-        return new TopicExchange(PRODUCT_POST_EX);
-    }
 
     /**
      * Method to bind get rpc queue and direct exchange, using this direct exchange the call is going to wait until
@@ -70,7 +107,7 @@ public class MQConfig {
         return BindingBuilder
                 .bind(getRpcQueue)
                 .to(getDirectExchange)
-                .with(PRODUCT_RPC_GET_RK);
+                .with(GET_RPC_ROUTING_KEY);
     }
 
     /**
@@ -83,7 +120,20 @@ public class MQConfig {
         return BindingBuilder
                 .bind(postQueue)
                 .to(postTopicExchange)
-                .with(PRODUCT_POST_RK);
+                .with(POST_ROUTING_KEY);
+    }
+
+    /**
+     * Method to bind queue and topic exchange using a routing key
+     *
+     * @return binding builder of {@link Binding} type
+     */
+    @Bean
+    public Binding postDlqBinding() {
+        return BindingBuilder
+                .bind(postDlq())
+                .to(postDlqExchange())
+                .with(POST_DLQ_ROUTING_KEY);
     }
 
     /**

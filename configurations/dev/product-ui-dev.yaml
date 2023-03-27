@@ -1,0 +1,13 @@
+server:
+  port: 8081
+
+spring:
+  mvc:
+    view:
+      prefix: /WEB-INF/jsp/
+      suffix: .jsp
+  rabbitmq:
+    # queue listen port changed by configuration from 5672 to 5677
+    addresses: 'localhost:5677'
+    username: guest
+    password: guest

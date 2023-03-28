@@ -19,3 +19,8 @@ main {
     padding-top: 50px;
     overflow-y: scroll;
 }
+
+.create-product, .list-products {
+    display: flex;
+    flex-flow: column wrap;
+}

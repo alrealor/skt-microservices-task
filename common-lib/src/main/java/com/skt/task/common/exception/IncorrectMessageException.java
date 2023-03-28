@@ -6,13 +6,13 @@ import lombok.Data;
  * Class to represent a Business Exception
  */
 @Data
-public class BusinessException extends Exception {
+public class IncorrectMessageException extends RuntimeException {
 
     private String errorCode;
     private String errorMessage;
 
-    public BusinessException(String errorCode, String errorMessage) {
-        super(errorCode + " - " + errorMessage);
+    public IncorrectMessageException(String errorCode, String errorMessage) {
+        super(errorCode + "-" + errorMessage);
         this.errorCode = errorCode;
         this.errorMessage = errorMessage;
     }

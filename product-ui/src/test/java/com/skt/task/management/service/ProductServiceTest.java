@@ -12,6 +12,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.math.BigDecimal;
 import java.util.List;
 
+import static com.skt.task.common.config.MQConfig.BEAN_GET_DIRECT_EXCHANGE;
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -24,7 +25,7 @@ public class ProductServiceTest {
     @MockBean
     private RabbitTemplate rabbitTemplate;
 
-    @MockBean
+    @MockBean(name = BEAN_GET_DIRECT_EXCHANGE)
     private DirectExchange directExchange;
 
     private ProductService productService;
@@ -33,7 +34,7 @@ public class ProductServiceTest {
      * setup before test executions used for init a product controller
      */
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         this.productService = new ProductService(rabbitTemplate, directExchange);
     }
 
@@ -57,7 +58,9 @@ public class ProductServiceTest {
      * test method for publishing a post message into post(publisher/subscriber) queue in order to create a new product
      */
     @Test
-    public void test_publishPostRequestMsg_success() throws Exception {
+    public void test_publishPostRequestMsg_success() {
+
+        ProductDTO dto = getTestProductDTO();
 
         doNothing()
                 .when(this.rabbitTemplate)

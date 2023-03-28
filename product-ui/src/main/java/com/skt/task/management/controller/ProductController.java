@@ -2,8 +2,10 @@ package com.skt.task.management.controller;
 
 import com.skt.task.common.domain.ProductDTO;
 import com.skt.task.management.service.ProductService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -12,8 +14,14 @@ import java.util.List;
 /**
  * controller class to manage the binding between JSPs and server
  */
+@CrossOrigin(origins = {"http://localhost:8080", "http://127.0.0.1:8080"})
+@Slf4j
 @Controller
 public class ProductController {
+
+    public static final String INDEX_VIEW = "index";
+    public static final String LIST_PRODUCTS_VIEW = "list-products";
+    public static final String CREATE_PRODUCT_VIEW = "create-product";
 
     private ProductService productService;
 
@@ -27,8 +35,8 @@ public class ProductController {
      * @return view file name
      */
     @GetMapping("/")
-    public String index() throws Exception {
-        return "index";
+    public String index() {
+        return INDEX_VIEW;
     }
 
     /**
@@ -37,10 +45,17 @@ public class ProductController {
      * @return view file name
      */
     @GetMapping("/goToListPage")
-    public String listProducts(Model model) throws Exception {
-        List<ProductDTO> products = productService.sendGetMsg();
-        model.addAttribute("products", products);
-        return "list-products";
+    public String listProducts(Model model) {
+        String target = LIST_PRODUCTS_VIEW;
+        try {
+            List<ProductDTO> products = productService.sendGetMsg();
+            model.addAttribute("products", products);
+        } catch(Exception ex) {
+            log.error("List of products cannot be retrieved: " + ex.getMessage());
+            model.addAttribute("error", true);
+            target = INDEX_VIEW;
+        }
+        return target;
     }
 
     /**
@@ -49,8 +64,8 @@ public class ProductController {
      * @return view file name
      */
     @GetMapping("/goToCreatePage")
-    public String goToCreateProduct() throws Exception {
-        return "create-product";
+    public String goToCreateProduct() {
+        return CREATE_PRODUCT_VIEW;
     }
 
     /**
@@ -58,9 +73,10 @@ public class ProductController {
      *
      * @return view file name
      */
-    @PostMapping("/createProduct")
-    public String createProduct(Model model, ProductDTO product) throws Exception {
+    @PostMapping(value = "/createProduct")
+    public String createProduct(Model model, ProductDTO product) {
         productService.publishPostRequestMsg(product);
-        return "index";
+        model.addAttribute("messageSent", true);
+        return CREATE_PRODUCT_VIEW;
     }
 }

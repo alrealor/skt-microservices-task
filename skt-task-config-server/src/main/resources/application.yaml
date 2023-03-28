@@ -1,18 +1,24 @@
 server:
-  port: 8888
-
+  port: 8889
 
 spring:
+  application:
+    name: configserver
   cloud:
     config:
       server:
         git:
-          uri: https://github.com/alrealor/skt-microservices-task/tree/feature/aa-001
+          uri: ${HOME}/Documents/dev/workspaces/skytouch/skt-microservices-task/config-repo
+          default-label: main
           repos:
-            any-request-repo:
-              uri: https://github.com/alrealor/skt-microservices-task/tree/feature/aa-001
-              pattern:
-                - product-ui*/*
+            development:
+              pattern: product-ui/dev, product-service/dev
+              uri: ${HOME}/Documents/dev/workspaces/skytouch/skt-microservices-task/config-repo
               search-paths:
-                - configurations/dev/{application}-{profile}
+                - dev
+#            any-request-repo:
+#              uri: ${HOME}/Documents/dev/workspaces/skytouch/skt-microservices-task/configrepo
+#              pattern: product-ui*/*
+#              search-paths:
+#                - /{application}-{profile}
 

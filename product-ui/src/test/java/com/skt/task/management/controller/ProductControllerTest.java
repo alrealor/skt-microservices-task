@@ -9,14 +9,13 @@ import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.ui.Model;
 
 import java.math.BigDecimal;
 
+import static com.skt.task.management.controller.ProductController.INDEX_VIEW;
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -107,9 +106,6 @@ public class ProductControllerTest {
     public void test_get_createProduct_success() throws Exception {
 
         this.mockMvc.perform(post("/createProduct"))
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content("{}")
-//                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(print());
     }
@@ -129,6 +125,23 @@ public class ProductControllerTest {
         String result = this.productController.listProducts(model);
 
         assertEquals("list-products", result);
+    }
+
+    /**
+     * test list products method from controller
+     *
+     * @throws Exception
+     */
+    @Test
+    public void test_listProducts_fail_throwException() throws Exception {
+
+        when(productService.sendGetMsg()).thenThrow(Exception.class);
+
+        String result = this.productController.listProducts(model);
+
+        assertNotNull(result);
+        assertEquals(INDEX_VIEW, result);
+        verify(model, times(1)).addAttribute("error", true);
     }
 
     /**

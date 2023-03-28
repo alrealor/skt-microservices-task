@@ -32,30 +32,20 @@
                             </div>
                         </div>
                     </form>
-                    <%-- Result response --%>
-                    <c:if test="${messageSent}">
-                        <div>
-                            <div class="mt-5">
+                    <%-- display confirmation/error messages --%>
+                    <div>
+                        <div class="mt-5">
+                            <c:if test="${messageSent}">
                                 <div class='alert alert-success' role='alert'>Product creation request was sent!</div>
-                            </div>
-                        </div>
-                    </c:if>
-                    <%-- Validation error --%>
-                    <c:if test="${validationError}">
-                        <div>
-                            <div class="mt-5">
+                            </c:if>
+                            <c:if test="${validationError}">
                                 <div class='alert alert-warning' role='alert'>Product data is not valid!</div>
-                            </div>
-                        </div>
-                    </c:if>
-                    <%-- Product creation error --%>
-                    <c:if test="${productCreationError}">
-                        <div>
-                            <div class="mt-5">
+                            </c:if>
+                            <c:if test="${productCreationError}">
                                 <div class='alert alert-danger' role='alert'>An error occurred, please try again later</div>
-                            </div>
+                            </c:if>
                         </div>
-                    </c:if>
+                    </div>
                 </div>
             </main>
             <footer class="alert alert-secondary">

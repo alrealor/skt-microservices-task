@@ -1,0 +1,62 @@
+version: "3"
+
+# Services
+services:
+
+  # Postgres
+  postgres:
+    #image: postgres:9.6.24-alpine3.14
+    image: postgres
+    container_name: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      PGDATA: /var/lib/postgresql/data
+    volumes:
+      - ./config/postgres/postgres-init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./config/postgres/data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    restart: unless-stopped
+    networks:
+      - postgres
+
+  # PGAdmin
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "admin@admin.com"
+      PGADMIN_DEFAULT_PASSWORD: "admin"
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    ports:
+      - "80:80"
+    networks:
+      - postgres
+    restart: unless-stopped
+    depends_on:
+      - postgres
+
+  # RabbitMQ
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - 4369:4369
+      - 5671:5671
+      - 5677:5677
+      - 15677:15677
+    volumes:
+      - ./config/rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+    restart: unless-stopped
+
+# Networks
+networks:
+  postgres:
+    driver: bridge
+
+# Volumes:
+volumes:
+#  postgres:
+  pgadmin:

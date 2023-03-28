@@ -5,10 +5,12 @@ import com.skt.task.management.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -23,7 +25,7 @@ public class ProductController {
     public static final String LIST_PRODUCTS_VIEW = "list-products";
     public static final String CREATE_PRODUCT_VIEW = "create-product";
 
-    private ProductService productService;
+    private final ProductService productService;
 
     public ProductController(ProductService productService) {
         this.productService = productService;
@@ -74,9 +76,21 @@ public class ProductController {
      * @return view file name
      */
     @PostMapping(value = "/createProduct")
-    public String createProduct(Model model, ProductDTO product) {
-        productService.publishPostRequestMsg(product);
-        model.addAttribute("messageSent", true);
+    public String createProduct(Model model,
+                                @Valid ProductDTO product,
+                                BindingResult result) {
+        try {
+            if (!result.hasErrors()) {
+                productService.publishPostRequestMsg(product);
+                model.addAttribute("messageSent", true);
+            } else {
+                log.info("Product fields have validation error: " + result.getAllErrors());
+                model.addAttribute("validationError", true);
+            }
+        } catch(Exception ex) {
+            log.error("An error occurred creating product: " + ex.getMessage());
+            model.addAttribute("productCreationError", true);
+        }
         return CREATE_PRODUCT_VIEW;
     }
 }

@@ -12,13 +12,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 
 import java.math.BigDecimal;
 
+import static com.skt.task.management.controller.ProductController.CREATE_PRODUCT_VIEW;
 import static com.skt.task.management.controller.ProductController.INDEX_VIEW;
 import static java.util.Collections.singletonList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -41,6 +42,9 @@ public class ProductControllerTest {
 
     @MockBean
     private Model model;
+
+    @MockBean
+    private BindingResult bindingResult;
 
     @MockBean
     private AmqpTemplate template;
@@ -158,9 +162,30 @@ public class ProductControllerTest {
                 .when(productService)
                 .publishPostRequestMsg(product);
 
-        this.productController.createProduct(model, product);
+        this.productController.createProduct(model, product, bindingResult);
 
         verify(productService, times(1)).publishPostRequestMsg(product);
+    }
+
+    /**
+     * test create product method from controller
+     *
+     * @throws Exception
+     */
+    @Test
+    public void test_createProduct_fail_connectionException() {
+
+        ProductDTO product = getTestProductDTO();
+
+        doThrow(Exception.class)
+                .when(productService).publishPostRequestMsg(any(ProductDTO.class));
+
+        String result = this.productController.createProduct(model, product, bindingResult);
+
+        verify(productService, times(1))
+                .publishPostRequestMsg(any(ProductDTO.class));
+        assertNotNull(result);
+        assertEquals(CREATE_PRODUCT_VIEW, result);
     }
 
     /**

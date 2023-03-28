@@ -11,6 +11,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static com.skt.task.common.constants.ErrorCodes.INVALID_PRODUCT_NAME;
@@ -60,7 +61,7 @@ public class ProductMsgListener {
             throw new IncorrectMessageException(INVALID_PRODUCT_NAME, "Product name is blank");
         }
         // price validation
-        if (message.getPrice().intValue() <= 0) {
+        if (message.getPrice().compareTo(BigDecimal.ZERO) <= 0){
             log.error("Product price is equals or lower than zero");
             throw new IncorrectMessageException(INVALID_PRODUCT_PRICE, "Product price is equals or lower than zero");
         }

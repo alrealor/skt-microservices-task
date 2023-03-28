@@ -8,8 +8,8 @@ MINVALUE 1000;
 CREATE TABLE IF NOT EXISTS public.product
 (
     id integer NOT NULL,
-    name text COLLATE pg_catalog."default" NOT NULL,
-    price numeric NOT NULL,
+    name varchar(150) COLLATE pg_catalog."default" NOT NULL,
+    price numeric(12,2) NOT NULL,
     CONSTRAINT product_pkey PRIMARY KEY (id)
 );
 

@@ -1,7 +1,6 @@
 package com.skt.task.management.service;
 
 import com.skt.task.common.domain.ProductDTO;
-import com.skt.task.common.exception.BusinessException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,7 +33,7 @@ public class ProductServiceTest {
      * setup before test executions used for init a product controller
      */
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         this.productService = new ProductService(rabbitTemplate, directExchange);
     }
 
@@ -42,7 +41,7 @@ public class ProductServiceTest {
      * test method for publishing a get message into RPC queue in order to get available products
      */
     @Test
-    public void test_sendGet_success() throws Exception {
+    public void test_sendGet_success() {
 
         doReturn(singletonList(getTestProductDTO()))
                 .when(rabbitTemplate)
@@ -58,31 +57,18 @@ public class ProductServiceTest {
      * test method for publishing a post message into post(publisher/subscriber) queue in order to create a new product
      */
     @Test
-    public void test_publishPostRequestMsg_success() throws Exception {
+    public void test_publishPostRequestMsg_success() {
 
         ProductDTO dto = getTestProductDTO();
 
-        doReturn(dto)
+        doNothing()
                 .when(this.rabbitTemplate)
-                .convertSendAndReceive(any(String.class), any(String.class), any(ProductDTO.class));
-
-        ProductDTO result = this.productService.publishPostRequestMsg(getTestProductDTO());
-
-        verify(this.rabbitTemplate, times(1)).
-                convertSendAndReceive(any(String.class), any(String.class), any(ProductDTO.class));
-    }
-
-    /**
-     * test method for publishing a post message into post(publisher/subscriber) queue in order to create a new product
-     */
-    @Test(expected = BusinessException.class)
-    public void test_publishPostRequestMsg_fail_businessException() throws Exception {
-
-        doReturn(null)
-                .when(this.rabbitTemplate)
-                .convertSendAndReceive(any(String.class), any(String.class), any(ProductDTO.class));
+                .convertAndSend(any(String.class), any(String.class), any(ProductDTO.class));
 
         this.productService.publishPostRequestMsg(getTestProductDTO());
+
+        verify(this.rabbitTemplate, times(1)).
+                convertAndSend(any(String.class), any(String.class), any(ProductDTO.class));
     }
 
     /**

@@ -20,7 +20,7 @@ import java.math.BigDecimal;
 import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -106,10 +106,10 @@ public class ProductControllerTest {
     @Test
     public void test_get_createProduct_success() throws Exception {
 
-        this.mockMvc.perform(post("/createProduct")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{}")
-                        .accept(MediaType.APPLICATION_JSON))
+        this.mockMvc.perform(post("/createProduct"))
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content("{}")
+//                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(print());
     }
@@ -141,13 +141,13 @@ public class ProductControllerTest {
 
         ProductDTO product = getTestProductDTO();
 
-        doReturn(product)
+        doNothing()
                 .when(productService)
                 .publishPostRequestMsg(product);
 
-        ResponseEntity<ProductDTO> result = this.productController.createProduct(product);
+        this.productController.createProduct(model, product);
 
-        assertNotNull(result);
+        verify(productService, times(1)).publishPostRequestMsg(product);
     }
 
     /**

@@ -7,8 +7,8 @@ spring:
       connectionTimeout: '20000'
       maximumPoolSize: '5'
     url: 'jdbc:postgresql://localhost:5432/postgres'
-    username: postgres
-    password: postgres
+    username: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASS}
     driver-class-name: org.postgresql.Driver
   # JPA / hibernate
   jpa:
@@ -24,9 +24,9 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
   # RabbitMQ
   rabbitmq:
-    addresses: 'localhost:5672'
-    username: guest
-    password: guest
+    addresses: 'localhost:5677'
+    username: ${RABBITMQ_USERNAME}
+    password: ${RABBITMQ_PASS}
     listener:
       simple:
         retry:

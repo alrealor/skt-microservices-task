@@ -5,13 +5,16 @@ import com.skt.task.common.domain.BaseResponse;
 import com.skt.task.common.exception.BusinessException;
 import org.hibernate.exception.JDBCConnectionException;
 import org.hibernate.exception.SQLGrammarException;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.lang.reflect.InvocationTargetException;
+
+import static com.skt.task.common.constants.ErrorCodes.STANDARD_CONNECTION_CODE;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE;
 
 /**
  * Class to centralize the management of exceptions
@@ -27,7 +30,9 @@ public class DefaultExceptionHandler extends ResponseEntityExceptionHandler {
      */
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<BaseResponse> handleBusinessExceptions(BusinessException ex) {
-        return new ResponseEntity<>(this.buildErrorBaseResponse(ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(
+                this.buildErrorBaseResponse(ex.getErrorCode(), ex.getErrorMessage()),
+                INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -42,8 +47,9 @@ public class DefaultExceptionHandler extends ResponseEntityExceptionHandler {
                                SQLGrammarException.class})
     public ResponseEntity<BaseResponse> handleConnectionExceptions(Exception ex) {
 
-        return new ResponseEntity<>(this.buildErrorBaseResponse("SUN001-"+ex.getMessage()),
-                HttpStatus.SERVICE_UNAVAILABLE);
+        return new ResponseEntity<>(
+                this.buildErrorBaseResponse(STANDARD_CONNECTION_CODE, ex.getMessage()),
+                SERVICE_UNAVAILABLE);
     }
 
     /**
@@ -52,12 +58,11 @@ public class DefaultExceptionHandler extends ResponseEntityExceptionHandler {
      * @param errorMessage of {@link String} type
      * @return base error response of {@link BaseResponse} type
      */
-    private BaseResponse buildErrorBaseResponse(String errorMessage) {
+    private BaseResponse buildErrorBaseResponse(String errorCode, String errorMessage) {
         BaseResponse baseResponse = new BaseResponse();
         BaseError baseError = new BaseError();
-        String[] split = errorMessage.split("-", 2);
-        baseError.setErrorCode(split[0]);
-        baseError.setErrorMessage(split[1]);
+        baseError.setErrorCode(errorCode);
+        baseError.setErrorMessage(errorMessage);
         baseResponse.setError(baseError);
 
         return baseResponse;

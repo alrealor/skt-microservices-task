@@ -14,6 +14,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class MQConfig {
 
+    public static final String BEAN_GET_DIRECT_EXCHANGE = "getDirectExchange";
+    public static final String BEAN_POST_TOPIC_EXCHANGE = "postTopicExchange";
+    public static final String BEAN_POST_DLQ_DIRECT_EXCHANGE = "postDlqExchange";
+
     // GET PRC QUEUE
     public static final String GET_RPC_QUEUE = "get_rpc_queue";
     public static final String GET_RPC_EXCHANGE= "get_rpc_exchange" ;
@@ -35,7 +39,7 @@ public class MQConfig {
      *
      * @return topic exchange of {@link DirectExchange} type
      */
-    @Bean(name = "getDirectExchange")
+    @Bean(name = BEAN_GET_DIRECT_EXCHANGE)
     public DirectExchange getDirectExchange() {
         return new DirectExchange(GET_RPC_EXCHANGE);
     }
@@ -45,7 +49,7 @@ public class MQConfig {
      *
      * @return topic exchange of {@link TopicExchange} type
      */
-    @Bean(name = "postTopicExchange")
+    @Bean(name = BEAN_POST_TOPIC_EXCHANGE)
     public TopicExchange postTopicExchange() {
         return new TopicExchange(POST_EXCHANGE);
     }
@@ -55,7 +59,7 @@ public class MQConfig {
      *
      * @return topic exchange of {@link DirectExchange} type
      */
-    @Bean(name = "postDlqExchange")
+    @Bean(name = BEAN_POST_DLQ_DIRECT_EXCHANGE)
     public DirectExchange postDlqExchange() {
         return new DirectExchange(POST_DLQ_EXCHANGE);
     }
@@ -65,7 +69,7 @@ public class MQConfig {
      *
      * @return queue of {@link Queue} type
      */
-    @Bean(name="getRpcQueue")
+    @Bean
     public Queue getRpcQueue() {
         return new Queue(GET_RPC_QUEUE);
     }
@@ -75,7 +79,7 @@ public class MQConfig {
      *
      * @return queue of {@link Queue} type
      */
-    @Bean(name = "postQueue")
+    @Bean
     public Queue postQueue() {
 
         return QueueBuilder.durable(POST_QUEUE)
@@ -89,7 +93,7 @@ public class MQConfig {
      *
      * @return queue of {@link Queue} type
      */
-    @Bean(name = "postDlq")
+    @Bean
     public Queue postDlq() {
 
         return QueueBuilder.durable(POST_DLQ_QUEUE).build();
@@ -103,10 +107,10 @@ public class MQConfig {
      * @return binding builder of {@link Binding} type
      */
     @Bean
-    public Binding getRpcBinding(DirectExchange getDirectExchange, Queue getRpcQueue) {
+    public Binding getRpcBinding() {
         return BindingBuilder
-                .bind(getRpcQueue)
-                .to(getDirectExchange)
+                .bind(getRpcQueue())
+                .to(getDirectExchange())
                 .with(GET_RPC_ROUTING_KEY);
     }
 
@@ -116,10 +120,10 @@ public class MQConfig {
      * @return binding builder of {@link Binding} type
      */
     @Bean
-    public Binding postBinding(Queue postQueue, TopicExchange postTopicExchange) {
+    public Binding postBinding() {
         return BindingBuilder
-                .bind(postQueue)
-                .to(postTopicExchange)
+                .bind(postQueue())
+                .to(postTopicExchange())
                 .with(POST_ROUTING_KEY);
     }
 

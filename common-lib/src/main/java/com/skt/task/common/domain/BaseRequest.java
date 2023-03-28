@@ -13,6 +13,6 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BaseRequest<T> implements Serializable {
+public class BaseRequest<T extends Serializable> {
     T payload;
 }

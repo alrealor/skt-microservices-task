@@ -52,7 +52,7 @@ public class ProductMsgListenerTest {
                 .when(productService)
                 .getProducts();
 
-        List<ProductDTO> result = productMsgListener.getProductMessage("TEST");
+        List<ProductDTO> result = productMsgListener.getProductMessage("GET_PRODUCT_LIST");
 
         assertNotNull(result);
         assertEquals(products.get(0).getId(), result.get(0).getId());

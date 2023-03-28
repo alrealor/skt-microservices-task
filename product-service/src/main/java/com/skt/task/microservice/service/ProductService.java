@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.skt.task.common.constants.ErrorCodes.PRODUCT_NOT_CREATED;
 import static com.skt.task.microservice.mapper.ProductMapper.productMapper;
 
 /**
@@ -40,7 +41,7 @@ public class ProductService {
      * @return Collection of type {@link List<Product>} type
      */
     @Transactional(isolation = Isolation.READ_COMMITTED)
-    public List<ProductDTO> getProducts() throws Exception {
+    public List<ProductDTO> getProducts() {
         return this.productRepository.getProducts()
                 .stream()
                 .map(productMapper::map)
@@ -53,10 +54,10 @@ public class ProductService {
      * @return Collection of type {@link List<Product>} type
      */
     @Transactional(isolation = Isolation.SERIALIZABLE)
-    public ProductDTO addProduct(final ProductDTO request) throws Exception {
+    public ProductDTO addProduct(final ProductDTO request) throws BusinessException {
          return Optional.of(request)
                 .map(req -> this.productRepository.addProduct(req.getName(), req.getPrice()))
                 .map(id -> new ProductDTO(id, request.getName(), request.getPrice()))
-                .orElseThrow(() -> new BusinessException("BUS001 - Product cannot be added"));
+                .orElseThrow(() -> new BusinessException(PRODUCT_NOT_CREATED, "Product could not be created"));
     }
 }

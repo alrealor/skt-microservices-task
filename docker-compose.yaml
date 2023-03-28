@@ -13,8 +13,8 @@ services:
       POSTGRES_PASSWORD: postgres
       PGDATA: /var/lib/postgresql/data
     volumes:
-      - ./postgres-init.sql:/docker-entrypoint-initdb.d/init.sql
-      - /tmp/postgrestest:/var/lib/postgresql/data
+      - ./config/postgres/postgres-init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./config/postgres/data:/var/lib/postgresql/data
     ports:
       - 5432:5432
     restart: unless-stopped
@@ -45,8 +45,10 @@ services:
     ports:
       - 4369:4369
       - 5671:5671
-      - 5672:5672
-      - 15672:15672
+      - 5677:5677
+      - 15677:15677
+    volumes:
+      - ./config/rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
     restart: unless-stopped
 
 # Networks

@@ -2,11 +2,11 @@ package com.skt.task.management.controller;
 
 import com.skt.task.common.domain.ProductDTO;
 import com.skt.task.management.service.ProductService;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 
@@ -29,7 +29,7 @@ public class ProductController {
      * @return view file name
      */
     @GetMapping("/")
-    public String index() throws Exception {
+    public String index() {
         return "index";
     }
 
@@ -39,7 +39,7 @@ public class ProductController {
      * @return view file name
      */
     @GetMapping("/goToListPage")
-    public String listProducts(Model model) throws Exception {
+    public String listProducts(Model model) {
         List<ProductDTO> products = productService.sendGetMsg();
         model.addAttribute("products", products);
         return "list-products";
@@ -51,7 +51,7 @@ public class ProductController {
      * @return view file name
      */
     @GetMapping("/goToCreatePage")
-    public String goToCreateProduct() throws Exception {
+    public String goToCreateProduct() {
         return "create-product";
     }
 
@@ -60,9 +60,10 @@ public class ProductController {
      *
      * @return view file name
      */
-    @PostMapping(value = "/createProduct", consumes= MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO product) throws Exception {
-        ProductDTO result = productService.publishPostRequestMsg(product);
-        return ResponseEntity.ok().body(result);
+    @PostMapping(value = "/createProduct")
+    public String createProduct(Model model, ProductDTO product) {
+        productService.publishPostRequestMsg(product);
+        model.addAttribute("messageSent", true);
+        return "create-product";
     }
 }

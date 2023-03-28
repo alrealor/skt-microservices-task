@@ -2,7 +2,6 @@ package com.skt.task.management.service;
 
 import com.skt.task.common.config.MQConfig;
 import com.skt.task.common.domain.ProductDTO;
-import com.skt.task.common.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -12,6 +11,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import static com.skt.task.common.config.MQConfig.BEAN_GET_DIRECT_EXCHANGE;
 
 /**
  * Service class containing business logic of product controller
@@ -25,7 +26,7 @@ public class ProductService {
     private DirectExchange directExchange;
 
     public ProductService(RabbitTemplate rabbitTemplate,
-                          @Qualifier("getDirectExchange") DirectExchange directExchange) {
+                          @Qualifier(BEAN_GET_DIRECT_EXCHANGE) DirectExchange directExchange) {
         this.rabbitTemplate = rabbitTemplate;
         this.directExchange = directExchange;
     }
@@ -35,9 +36,11 @@ public class ProductService {
      *
      * @return a collection of {@link List<ProductDTO>} type
      */
-    public List<ProductDTO> sendGetMsg() throws Exception {
-        return new ArrayList<>((Collection<ProductDTO>) rabbitTemplate
-                .convertSendAndReceive(directExchange.getName(), MQConfig.GET_RPC_ROUTING_KEY, "TEST"));
+    public List<ProductDTO> sendGetMsg() {
+        List<ProductDTO> products = new ArrayList<>((Collection<ProductDTO>) rabbitTemplate
+                .convertSendAndReceive(directExchange.getName(), MQConfig.GET_RPC_ROUTING_KEY, "GET_PRODUCTS_REQUEST"));
+        log.debug("RPC to get list of products was executed successfully");
+        return products;
     }
 
     /**
@@ -45,16 +48,8 @@ public class ProductService {
      *
      * @param product product to be created of {@link ProductDTO} type
      */
-    public ProductDTO publishPostRequestMsg(ProductDTO product) throws Exception {
-        ProductDTO result = (ProductDTO) this.rabbitTemplate
-                .convertSendAndReceive(MQConfig.POST_EXCHANGE, MQConfig.POST_ROUTING_KEY, product);
-
-        if (result == null) {
-            log.error("Error creating a new product for message: " + product.toString());
-            throw new BusinessException("CODE700-Product could not be created");
-        }
-
-        log.info("POST message sent successfully with return: " + result);
-        return result;
+    public void publishPostRequestMsg(ProductDTO product) {
+        this.rabbitTemplate.convertAndSend(MQConfig.POST_EXCHANGE, MQConfig.POST_ROUTING_KEY, product);
+        log.debug("Message to create a new product was sent successfully: " + product.toString());
     }
 }

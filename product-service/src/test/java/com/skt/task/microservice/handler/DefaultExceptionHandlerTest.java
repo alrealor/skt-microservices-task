@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 
 import java.sql.SQLException;
 
+import static com.skt.task.common.constants.ErrorCodes.PRODUCT_NOT_CREATED;
+import static com.skt.task.common.constants.ErrorCodes.STANDARD_CONNECTION_CODE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -28,13 +30,13 @@ public class DefaultExceptionHandlerTest {
     @Test
     public void test_handleBusinessExceptions_success() {
 
-        BusinessException ex = new BusinessException("CODE0-Business exception message");
+        BusinessException ex = new BusinessException(PRODUCT_NOT_CREATED, "Business exception message");
 
         ResponseEntity<BaseResponse> result = this.exceptionHandler.handleBusinessExceptions(ex);
 
         assertNotNull(result);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, result.getStatusCode());
-        assertEquals("CODE0", result.getBody().getError().getErrorCode());
+        assertEquals(PRODUCT_NOT_CREATED, result.getBody().getError().getErrorCode());
         assertEquals("Business exception message", result.getBody().getError().getErrorMessage());
     }
 
@@ -47,7 +49,7 @@ public class DefaultExceptionHandlerTest {
 
         assertNotNull(result);
         assertEquals(HttpStatus.SERVICE_UNAVAILABLE, result.getStatusCode());
-        assertEquals("SUN001", result.getBody().getError().getErrorCode());
+        assertEquals(STANDARD_CONNECTION_CODE, result.getBody().getError().getErrorCode());
         assertEquals("SQL grammar exception message", result.getBody().getError().getErrorMessage());
     }
 }

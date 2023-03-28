@@ -13,7 +13,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BaseResponse<T> implements Serializable {
+public class BaseResponse<T extends Serializable> {
     private T payload;
     private BaseError error;
 }

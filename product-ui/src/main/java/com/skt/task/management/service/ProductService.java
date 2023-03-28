@@ -36,7 +36,7 @@ public class ProductService {
      *
      * @return a collection of {@link List<ProductDTO>} type
      */
-    public List<ProductDTO> sendGetMsg() {
+    public List<ProductDTO> sendGetMsg() throws Exception {
         List<ProductDTO> products = new ArrayList<>((Collection<ProductDTO>) rabbitTemplate
                 .convertSendAndReceive(directExchange.getName(), MQConfig.GET_RPC_ROUTING_KEY, "GET_PRODUCTS_REQUEST"));
         log.debug("RPC to get list of products was executed successfully");

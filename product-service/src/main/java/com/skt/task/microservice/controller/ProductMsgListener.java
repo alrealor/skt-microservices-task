@@ -13,6 +13,9 @@ import org.springframework.util.StringUtils;
 
 import java.util.List;
 
+import static com.skt.task.common.constants.ErrorCodes.INVALID_PRODUCT_NAME;
+import static com.skt.task.common.constants.ErrorCodes.INVALID_PRODUCT_PRICE;
+
 /**
  * Listener class for getting the available messages coming from product-queue queue
  */
@@ -54,12 +57,12 @@ public class ProductMsgListener {
         // product name validation
         if (StringUtils.isEmpty(message.getName())){
             log.error("Product name is blank");
-            throw new IncorrectMessageException("CDE301 - Product name is blank");
+            throw new IncorrectMessageException(INVALID_PRODUCT_NAME, "Product name is blank");
         }
         // price validation
         if (message.getPrice().intValue() <= 0) {
             log.error("Product price is equals or lower than zero");
-            throw new IncorrectMessageException("CDE302 - Product price is negative");
+            throw new IncorrectMessageException(INVALID_PRODUCT_PRICE, "Product price is equals or lower than zero");
         }
         this.productService.addProduct(message);
         log.debug("Product was added successfully");

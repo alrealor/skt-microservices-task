@@ -18,10 +18,9 @@ main {
     align-items: flex-start;
     padding-top: 50px;
     overflow-y: scroll;
-    /*border:1px solid red;*/
 }
 
-.create-product {
+.create-product, .list-products {
     display: flex;
     flex-flow: column wrap;
 }

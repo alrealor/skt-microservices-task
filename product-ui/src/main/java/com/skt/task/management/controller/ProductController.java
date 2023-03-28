@@ -2,6 +2,7 @@ package com.skt.task.management.controller;
 
 import com.skt.task.common.domain.ProductDTO;
 import com.skt.task.management.service.ProductService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -14,8 +15,13 @@ import java.util.List;
  * controller class to manage the binding between JSPs and server
  */
 @CrossOrigin(origins = {"http://localhost:8080", "http://127.0.0.1:8080"})
+@Slf4j
 @Controller
 public class ProductController {
+
+    public static final String INDEX_VIEW = "index";
+    public static final String LIST_PRODUCTS_VIEW = "list-products";
+    public static final String CREATE_PRODUCT_VIEW = "create-product";
 
     private ProductService productService;
 
@@ -30,7 +36,7 @@ public class ProductController {
      */
     @GetMapping("/")
     public String index() {
-        return "index";
+        return INDEX_VIEW;
     }
 
     /**
@@ -40,9 +46,16 @@ public class ProductController {
      */
     @GetMapping("/goToListPage")
     public String listProducts(Model model) {
-        List<ProductDTO> products = productService.sendGetMsg();
-        model.addAttribute("products", products);
-        return "list-products";
+        String target = LIST_PRODUCTS_VIEW;
+        try {
+            List<ProductDTO> products = productService.sendGetMsg();
+            model.addAttribute("products", products);
+        } catch(Exception ex) {
+            log.error("List of products cannot be retrieved: " + ex.getMessage());
+            model.addAttribute("error", true);
+            target = INDEX_VIEW;
+        }
+        return target;
     }
 
     /**
@@ -52,7 +65,7 @@ public class ProductController {
      */
     @GetMapping("/goToCreatePage")
     public String goToCreateProduct() {
-        return "create-product";
+        return CREATE_PRODUCT_VIEW;
     }
 
     /**
@@ -64,6 +77,6 @@ public class ProductController {
     public String createProduct(Model model, ProductDTO product) {
         productService.publishPostRequestMsg(product);
         model.addAttribute("messageSent", true);
-        return "create-product";
+        return CREATE_PRODUCT_VIEW;
     }
 }

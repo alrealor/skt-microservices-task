@@ -3,6 +3,7 @@ package com.skt.task.management.controller;
 import com.skt.task.common.domain.ProductDTO;
 import com.skt.task.management.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -81,6 +82,8 @@ public class ProductController {
                                 BindingResult result) {
         try {
             if (!result.hasErrors()) {
+                //Sanitize input
+                product.setName(StringEscapeUtils.escapeHtml4(product.getName()));
                 productService.publishPostRequestMsg(product);
                 model.addAttribute("messageSent", true);
             } else {

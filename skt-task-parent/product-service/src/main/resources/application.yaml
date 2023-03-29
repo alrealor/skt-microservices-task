@@ -1,35 +1,8 @@
 spring:
-  datasource:
-    # Postgres
-    hikari:
-      connectionTimeout: '20000'
-      maximumPoolSize: '5'
-    url: 'jdbc:postgresql://localhost:5432/postgres'
-    username: ${POSTGRES_USERNAME}
-    password: ${POSTGRES_PASS}
-    driver-class-name: org.postgresql.Driver
-  # JPA / hibernate
-  jpa:
-    database: POSTGRESQL
-    show-sql: false
-    hibernate:
-      ddl-auto: update
-      naming:
-        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyHbmImpl
-    properties:
-      hibernate:
-        format_sql: true
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-  # RabbitMQ
-  rabbitmq:
-    addresses: 'localhost:5677'
-    username: ${RABBITMQ_USERNAME}
-    password: ${RABBITMQ_PASS}
-    listener:
-      simple:
-        retry:
-          enabled: true
-          initial-interval: 3000
-          max-attempts: 3
-          max-interval: 10000
-          multiplier: 2
+  application:
+    name: product-service
+  config:
+    import: "optional:configserver:"
+  cloud:
+    config:
+      enabled: false

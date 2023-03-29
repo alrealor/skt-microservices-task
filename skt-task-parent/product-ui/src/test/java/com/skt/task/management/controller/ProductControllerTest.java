@@ -9,6 +9,7 @@ import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.ui.Model;
@@ -19,7 +20,8 @@ import java.math.BigDecimal;
 import static com.skt.task.management.controller.ProductController.CREATE_PRODUCT_VIEW;
 import static com.skt.task.management.controller.ProductController.INDEX_VIEW;
 import static java.util.Collections.singletonList;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -32,6 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebMvcTest(controllers = ProductController.class)
+@ContextConfiguration
 public class ProductControllerTest {
 
     @Autowired
@@ -57,12 +60,10 @@ public class ProductControllerTest {
     @Before
     public void setup(){
         productController = new ProductController(productService);
-    };
+    }
 
     /**
      * test method for getting the index page
-     *
-     * @throws Exception
      */
     @Test
     public void test_get_goToIndexPage_success() throws Exception {
@@ -75,8 +76,6 @@ public class ProductControllerTest {
 
     /**
      * test method for going from index to list of products page
-     *
-     * @throws Exception
      */
     @Test
     public void test_get_goToProductListPage_success() throws Exception {
@@ -88,9 +87,7 @@ public class ProductControllerTest {
     }
 
     /**
-     * test method for going from index to create prouct page
-     *
-     * @throws Exception
+     * test method for going from index to create product page
      */
     @Test
     public void test_post_goToCreateProductPage_success() throws Exception {
@@ -103,8 +100,6 @@ public class ProductControllerTest {
 
     /**
      * test method for create product page flow
-     *
-     * @throws Exception
      */
     @Test
     public void test_get_createProduct_success() throws Exception {
@@ -116,8 +111,6 @@ public class ProductControllerTest {
 
     /**
      * test list products method from controller
-     *
-     * @throws Exception
      */
     @Test
     public void test_listProducts_success() throws Exception {
@@ -133,8 +126,6 @@ public class ProductControllerTest {
 
     /**
      * test list products method from controller
-     *
-     * @throws Exception
      */
     @Test
     public void test_listProducts_fail_throwException() throws Exception {
@@ -150,11 +141,9 @@ public class ProductControllerTest {
 
     /**
      * test create product method from controller
-     *
-     * @throws Exception
      */
     @Test
-    public void test_createProduct_success() throws Exception {
+    public void test_createProduct_success() {
 
         ProductDTO product = getTestProductDTO();
 
@@ -169,8 +158,6 @@ public class ProductControllerTest {
 
     /**
      * test create product method from controller
-     *
-     * @throws Exception
      */
     @Test
     public void test_createProduct_fail_connectionException() {
@@ -194,6 +181,6 @@ public class ProductControllerTest {
      * @return a product of {@link ProductDTO} type
      */
     private ProductDTO getTestProductDTO() {
-        return new ProductDTO(1L, "Test Product 1", new BigDecimal("100.50"));
+        return new ProductDTO("Test Product 1", new BigDecimal("100.50"));
     }
 }

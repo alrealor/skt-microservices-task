@@ -57,7 +57,7 @@ public class ProductService {
     public ProductDTO addProduct(final ProductDTO request) throws BusinessException {
          return Optional.of(request)
                 .map(req -> this.productRepository.addProduct(req.getName(), req.getPrice()))
-                .map(id -> new ProductDTO(id, request.getName(), request.getPrice()))
+                .map(id -> new ProductDTO(request.getName(), request.getPrice()))
                 .orElseThrow(() -> new BusinessException(PRODUCT_NOT_CREATED, "Product could not be created"));
     }
 }

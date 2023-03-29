@@ -1,5 +1,3 @@
-server:
-  port: '8091'
 # in memory DB
 jdbc:
   driverClassName: org.h2.Driver

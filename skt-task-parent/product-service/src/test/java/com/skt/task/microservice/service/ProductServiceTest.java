@@ -44,7 +44,6 @@ public class ProductServiceTest {
     public void test_getProducts_success() throws Exception {
 
         Product product = new Product();
-        product.setId(1L);
         product.setName("Test Product 1");
         product.setPrice(new BigDecimal(100.50));
 
@@ -57,7 +56,6 @@ public class ProductServiceTest {
         List<ProductDTO> result = this.productService.getProducts();
 
         assertNotNull(result);
-        assertEquals(products.get(0).getId(), result.get(0).getId());
         assertEquals(products.get(0).getName(), result.get(0).getName());
         assertEquals(products.get(0).getPrice(), result.get(0).getPrice());
     }
@@ -80,7 +78,6 @@ public class ProductServiceTest {
         List<ProductDTO> result = this.productService.getProducts();
 
         assertNotNull(result);
-        assertEquals(products.get(0).getId(), result.get(0).getId());
         assertEquals(products.get(0).getName(), result.get(0).getName());
         assertEquals(products.get(0).getPrice(), result.get(0).getPrice());
     }
@@ -100,7 +97,6 @@ public class ProductServiceTest {
         ProductDTO product = this.productService.addProduct(reqProduct);
 
         assertNotNull(product);
-        assertEquals(reqProduct.getId(), product.getId());
         assertEquals(reqProduct.getName(), product.getName());
         assertEquals(reqProduct.getPrice(), product.getPrice());
         verify(this.productRepository, times(1)).
@@ -128,6 +124,6 @@ public class ProductServiceTest {
      * @return a product of {@link ProductDTO} type
      */
     private ProductDTO getTestProductDTO() {
-        return new ProductDTO(1L, "Test Product 1", new BigDecimal("100.50"));
+        return new ProductDTO("Test Product 1", new BigDecimal("100.50"));
     }
 }

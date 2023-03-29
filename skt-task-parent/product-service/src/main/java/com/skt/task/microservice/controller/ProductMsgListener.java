@@ -7,6 +7,7 @@ import com.skt.task.common.exception.BusinessException;
 import com.skt.task.common.exception.IncorrectMessageException;
 import com.skt.task.microservice.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -55,6 +56,7 @@ public class ProductMsgListener {
     @RabbitListener(queues = MQConfig.POST_QUEUE)
     public void postProductMessage(ProductDTO message) throws BusinessException {
         log.debug("Message to create product is received: " + message.toString());
+
         // product name validation
         if (StringUtils.isEmpty(message.getName())){
             log.error("Product name is blank");
@@ -65,6 +67,10 @@ public class ProductMsgListener {
             log.error("Product price is equals or lower than zero");
             throw new IncorrectMessageException(INVALID_PRODUCT_PRICE, "Product price is equals or lower than zero");
         }
+
+        // Sanitize name param
+        message.setName(StringEscapeUtils.escapeHtml4(message.getName()));
+
         this.productService.addProduct(message);
         log.debug("Product was added successfully");
     }

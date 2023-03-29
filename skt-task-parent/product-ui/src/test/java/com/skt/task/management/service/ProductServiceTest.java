@@ -78,6 +78,6 @@ public class ProductServiceTest {
      * @return a product of {@link ProductDTO} type
      */
     private ProductDTO getTestProductDTO() {
-        return new ProductDTO(1L, "Test Product 1", new BigDecimal("100.50"));
+        return new ProductDTO("Test Product 1", new BigDecimal("100.50"));
     }
 }

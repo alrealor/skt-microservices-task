@@ -55,7 +55,6 @@ public class ProductMsgListenerTest {
         List<ProductDTO> result = productMsgListener.getProductMessage("GET_PRODUCT_LIST");
 
         assertNotNull(result);
-        assertEquals(products.get(0).getId(), result.get(0).getId());
         assertEquals(products.get(0).getName(), result.get(0).getName());
         assertEquals(products.get(0).getPrice(), result.get(0).getPrice());
         verify(productService, times(1)).getProducts();
@@ -116,6 +115,6 @@ public class ProductMsgListenerTest {
      * @return a product of {@link ProductDTO} type
      */
     private ProductDTO getTestProductDTO() {
-        return new ProductDTO(1L, "Test Product 1", new BigDecimal("100.50"));
+        return new ProductDTO("Test Product 1", new BigDecimal("100.50"));
     }
 }

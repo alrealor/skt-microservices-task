@@ -49,7 +49,6 @@
   <!-- centralizing dependencies, this dependencies from parent module will be available for submodules -->
   <dependencyManagement>
     <dependencies>
-      <!--spring boot parent starter-->
       <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>

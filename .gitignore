@@ -9,6 +9,8 @@
 .idea/
 .shelf
 /*.iml
+*/*.iml
+**/*.iml
 /*.ipr
 /*.iws
 /out

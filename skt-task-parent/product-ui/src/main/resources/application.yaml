@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: product-ui
+  config:
+    import: "optional:configserver:"
+  cloud:
+    config:
+      enabled: false

@@ -63,10 +63,6 @@ build/
 
 # Maven specific
 target/
-*/mvnw
-*/mvnw.cmd
-*/.mvn/*
-
 
 #Skip all SVN related
 .svn/
@@ -83,8 +79,5 @@ CVS/
 
 .DS_Store
 
-skt-task-parent/config/postgres/data
-skt-task-parentconfig/postgres/data/*
-*/config/postgres/data
-
-# maven
+config/postgres/data
+config/postgres/data/*

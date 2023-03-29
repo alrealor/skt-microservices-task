@@ -1,0 +1,24 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: configserver
+  cloud:
+    config:
+      server:
+        git:
+          uri: ${HOME}/Documents/dev/workspaces/skytouch/skt-microservices-task/config-repo
+          default-label: main
+          repos:
+            development:
+              pattern: product-ui/dev, product-service/dev
+              uri: ${HOME}/Documents/dev/workspaces/skytouch/skt-microservices-task/config-repo
+              search-paths:
+                - dev
+#            any-request-repo:
+#              uri: ${HOME}/Documents/dev/workspaces/skytouch/skt-microservices-task/configrepo
+#              pattern: product-ui*/*
+#              search-paths:
+#                - /{application}-{profile}
+

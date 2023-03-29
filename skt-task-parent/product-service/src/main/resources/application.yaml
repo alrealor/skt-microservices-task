@@ -5,4 +5,7 @@ spring:
     import: "optional:configserver:"
   cloud:
     config:
+      # label specifies the repo branch from client side to target at server: http://localhost:8888/product-service/dev/develop
+      # where product-service = {application-name}, dev = {profile}, develop = {git-repo-branch}
+      label: develop
       enabled: false

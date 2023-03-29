@@ -10,17 +10,13 @@ spring:
         git:
           uri: https://github.com/alrealor/skt-microservices-task
 #          uri: ${HOME}/Documents/dev/workspaces/skytouch/skt-microservices-task/config-repo
+          # default-label specifies the git repo branch from server side
           default-label: develop
           repos:
-            development:
+            dev-env:
               pattern: product-ui/dev, product-service/dev
 #              uri: ${HOME}/Documents/dev/workspaces/skytouch/skt-microservices-task/config-repo
               uri: https://github.com/alrealor/skt-microservices-task
               search-paths:
-                - dev
-#            any-request-repo:
-#              uri: ${HOME}/Documents/dev/workspaces/skytouch/skt-microservices-task/configrepo
-#              pattern: product-ui*/*
-#              search-paths:
-#                - /{application}-{profile}
+                - env-config/dev
 

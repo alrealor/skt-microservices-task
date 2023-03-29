@@ -2,43 +2,42 @@
 SKT-MICROSERVICE-TASK
 #####################
 
+Modules
+-------
+1. Management App:
+    a. 2 JSP one to create the products and another one to list them.
+    b. Controller to handle the requests.
+    c. Service to send the message through a queue (using 4) to the microservice (3).
+2. Common Library:
+    a. Contains the POJO that will be used to serialize and deserialize between 1 and 3.
+    b. Serializer and deserializer if required.
+3. Microservice:
+    a. Connects to the DB to save and get the data (stored procedure (SP) required).
+    b. Consume the message from queue (using 2)
+    c. Send the list of products that will be shown in the view list on 1 to a queue (using 2)
+4. The queue or topic depending on if is using RabbitMQ or Kafka
+5. The DB that will save the data
+    a. The insert and select will be through a Stored Procedure
 
-# postgresql database assets
-----------------------------
+Requirements
+------------
+● SpringBoot 1.5.7.RELEASE (Skytouch actual implementation)
+● JDK 1.8
+● Maven 3
+● RabbitMQ / Kafka / SQS
+● Docker for all DB’s and Brokers (i.e. RabbitMQ, queues)
+● JUnit
+● AssertJ (Optional but recommended)
 
-    // sequence for column id of product table
-    CREATE SEQUENCE product_sequence
-    START WITH 1000
-    INCREMENT BY 1
-    MINVALUE 1000;
+Expectations
+------------
+● Send and receive a POJO in JSON format.
+● Listen to messages in RabbitMQ or Kafka using a non-default port.
+● 80% test coverage is expected on unit tests
+● Implement an error handling mechanism
+● Consider that applications must support concurrency
 
-    // product table
-    CREATE TABLE IF NOT EXISTS public.product
-    (
-        id integer NOT NULL,
-        name text COLLATE pg_catalog."default" NOT NULL,
-        price numeric NOT NULL,
-        CONSTRAINT product_pkey PRIMARY KEY (id)
-    );
-
-    // alter product table to set sequence to id column
-    ALTER TABLE public.product
-    ALTER COLUMN id SET DEFAULT nextval('product_sequence');
-
-    // stored function to insert a new product into product table
-    CREATE OR REPLACE FUNCTION public.insert_product(p_name text, p_price numeric)
-    RETURNS numeric
-    LANGUAGE SQL
-    AS $BODY$
-        INSERT INTO public.product (name, price)
-        VALUES(p_name, p_price)
-        RETURNING id;
-    $BODY$;
-
-    // stored function to get all available products from product table
-    CREATE OR REPLACE FUNCTION get_products()
-        RETURNS SETOF product
-    LANGUAGE SQL
-    AS $BODY$
-        SELECT * FROM product;
-    $BODY$;
+Nice to have
+------------
+● Use a Spring Configuration server to externalize the application settings, like RabbitMQ and Kafka, to a local Git repository
+● Use docker-compose to get RabbitMQ or Kafka and the DB running

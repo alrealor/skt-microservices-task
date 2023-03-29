@@ -8,12 +8,14 @@ spring:
     config:
       server:
         git:
-          uri: ${HOME}/Documents/dev/workspaces/skytouch/skt-microservices-task/config-repo
-          default-label: main
+          uri: https://github.com/alrealor/skt-microservices-task
+#          uri: ${HOME}/Documents/dev/workspaces/skytouch/skt-microservices-task/config-repo
+          default-label: develop
           repos:
             development:
               pattern: product-ui/dev, product-service/dev
-              uri: ${HOME}/Documents/dev/workspaces/skytouch/skt-microservices-task/config-repo
+#              uri: ${HOME}/Documents/dev/workspaces/skytouch/skt-microservices-task/config-repo
+              uri: https://github.com/alrealor/skt-microservices-task
               search-paths:
                 - dev
 #            any-request-repo:

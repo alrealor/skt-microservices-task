@@ -5,10 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.NotBlank;
 
-import javax.validation.constraints.DecimalMax;
-import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.Digits;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.math.BigDecimal;
 
 /**
@@ -24,5 +21,6 @@ public class ProductDTO {
     @DecimalMin(value = "1.00")
     @DecimalMax(value = "999999999999.99")
     @Digits(integer = 12, fraction = 2)
+    @Min(1)
     private BigDecimal price;
 }

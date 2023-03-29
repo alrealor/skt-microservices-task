@@ -83,8 +83,7 @@ CVS/
 
 .DS_Store
 
-skt-task-parent/config/postgres/data
-skt-task-parentconfig/postgres/data/*
-*/config/postgres/data
+docker/postgres/data
+docker/postgres/data/*
+*/docker/postgres/data
 
-# maven

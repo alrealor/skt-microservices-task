@@ -11,6 +11,11 @@
   <artifactId>common-lib</artifactId>
 
   <dependencies>
+    <!-- amqp starter -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-amqp</artifactId>
+    </dependency>
     <!-- spring boot - validation starter -->
     <dependency>
       <groupId>org.springframework.boot</groupId>

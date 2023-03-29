@@ -13,6 +13,7 @@
     <module>common-lib</module>
     <module>product-service</module>
     <module>product-ui</module>
+    <module>config-server</module>
   </modules>
 
   <!-- properties -->
@@ -36,12 +37,6 @@
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
       <version>${lombok.version}</version>
-    </dependency>
-    <!-- amqp starter -->
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-amqp</artifactId>
-      <version>${springboot.version}</version>
     </dependency>
     <!-- apache commons text -->
     <dependency>

@@ -22,6 +22,7 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
   # RabbitMQ
   rabbitmq:
+    # default queue listening port = 5672
     addresses: 'localhost:5677'
     username: ${RABBITMQ_USERNAME}
     password: ${RABBITMQ_PASS}
